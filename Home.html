@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxware | Sovereign Google Cloud & Fiscal Infrastructure Middleware</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-gold: #fbbf24;
+            --neon-green: #10b981;
+            --neon-blue: #06b6d4;
+            --neon-purple: #8b5cf6;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030307;
+            overflow-x: hidden;
+        }
+        .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .outfit-font {
+            font-family: 'Outfit', sans-serif;
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Ambient Cosmic Grid Background mimicking Antigravity and GCP Console UI */
+        .taxware-background {
+            background-color: #030307;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(251, 191, 36, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.04) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.02) 0%, transparent 60%);
+            position: relative;
+        }
+
+        .taxware-background::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Interactive Card Spotlight with dynamic mouse tracking */
+        .spotlight-hover {
+            position: relative;
+            background: rgba(10, 10, 18, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: border-color 0.4s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+            z-index: 5;
+        }
+        .spotlight-hover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(251, 191, 36, 0.12), transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .spotlight-hover:hover::before {
+            opacity: 1;
+        }
+        .spotlight-hover:hover {
+            border-color: rgba(251, 191, 36, 0.3);
+            box-shadow: 0 12px 30px -10px rgba(251, 191, 36, 0.15);
+            transform: translateY(-4px);
+        }
+
+        /* Mouse tracking spot background for buttons */
+        .btn-gcp-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-gcp-glow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(120px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.18), transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .btn-gcp-glow:hover::before {
+            opacity: 1;
+        }
+
+        /* Fixed Active Floating Cursor Node on page width */
+        #gcp-cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.04) 0%, rgba(16, 185, 129, 0.02) 40%, transparent 70%);
+            pointer-events: none;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out;
+            opacity: 0;
+        }
+
+        /* Zero gravity subtle float simulation */
+        @keyframes subtle-bounce {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(0.4deg); }
+        }
+        .gcp-orb-float {
+            animation: subtle-bounce 8s ease-in-out infinite;
+        }
+        .gcp-orb-float-delayed {
+            animation: subtle-bounce 10s ease-in-out infinite;
+            animation-delay: 2.5s;
+        }
+
+        /* Enhanced hardware-accelerated Scroll Reveal Utility */
+        .reveal-node {
+            opacity: 0;
+            transform: translateY(30px) scale(0.97);
+            filter: blur(4px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+        .reveal-node.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        /* Custom scroll physics style */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020205;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(251, 191, 36, 0.15);
+            border: 2px solid #020205;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(251, 191, 36, 0.4);
+        }
+    </style>
+</head>
+<body class="taxware-background text-slate-300 min-h-screen flex flex-col antialiased">
+
+    <!-- Active Hardware-Accelerated Top Scroll Progress Tracker -->
+    <div class="fixed top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 via-emerald-500 to-cyan-500 z-[100] origin-left" id="gcp-scroll-bar" style="transform: scaleX(0);"></div>
+
+    <!-- Interactive Ambient Glow Follower -->
+    <div id="gcp-cursor-glow"></div>
+
+    <!-- Header Navigation Section -->
+    <header class="sticky top-0 z-50 bg-[#04040a]/80 backdrop-blur-xl border-b border-white/[0.04] shadow-[0_4px_30px_rgba(0,0,0,0.7)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <!-- Taxware Animated Brand Logo -->
+                <div class="relative h-11 w-11 rounded-xl bg-amber-950/40 border border-amber-500/30 flex items-center justify-center text-amber-400 font-extrabold text-xl shadow-[0_0_25px_rgba(251,191,36,0.2)]">
+                    ⎔
+                    <div class="absolute -inset-0.5 rounded-xl bg-amber-500/20 blur opacity-45 animate-pulse"></div>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="heading-font font-black tracking-tight text-white text-lg">TAXWARE.IN</span>
+                        <span class="text-[9px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded uppercase font-mono tracking-wider">Enterprise Sandbox v3</span>
+                    </div>
+                    <span class="block text-[10px] text-zinc-500 tracking-wider uppercase font-mono font-medium">Compliance Host & Google Cloud Node</span>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-xs text-zinc-400 font-semibold select-none">
+                <a href="#about" class="hover:text-amber-400 border-b border-transparent hover:border-amber-400/50 py-1.5 transition">About Middleware</a>
+                <a href="#gcpPortfolio" class="hover:text-emerald-400 border-b border-transparent hover:border-emerald-400/50 py-1.5 transition">GCP Workspace</a>
+                <a href="#solutions" class="hover:text-cyan-400 border-b border-transparent hover:border-cyan-400/50 py-1.5 transition">Sovereign Matrix</a>
+                <a href="#complianceSimulator" class="hover:text-purple-400 border-b border-transparent hover:border-purple-400/50 py-1.5 transition font-medium">Ledger Console</a>
+                <a href="/etsy" class="px-3.5 py-1.5 border border-amber-500/20 text-amber-400 rounded-lg hover:bg-amber-500/10 transition flex items-center gap-1">
+                    <span>Aitsy Companion</span>
+                    <span class="text-[10px] text-emerald-400 font-sans tracking-wide">● Live</span>
+                </a>
+            </nav>
+
+            <a href="/etsy" class="md:hidden text-[9px] font-bold text-amber-400 bg-amber-950/50 border border-amber-800/40 px-2.5 py-1.5 rounded-lg uppercase tracking-wider font-mono">
+                Launch Workspace
+            </a>
+        </div>
+    </header>
+
+    <!-- Zero-Gravity Hero Console Intro -->
+    <section class="relative pt-24 pb-20 border-b border-white/[0.03] overflow-hidden" id="about">
+        <!-- Floating Google Cloud / Antigravity Style Background Circles -->
+        <div class="absolute top-24 left-16 w-52 h-52 rounded-full bg-amber-600/5 blur-[85px] gcp-orb-float"></div>
+        <div class="absolute bottom-12 right-20 w-60 h-60 rounded-full bg-emerald-600/5 blur-[100px] gcp-orb-float-delayed"></div>
+
+        <div class="max-w-5xl mx-auto px-4 text-center relative z-10">
+            <div class="inline-flex items-center space-x-2 bg-zinc-950 border border-zinc-800/80 px-4 py-1.5 rounded-full mb-8">
+                <span class="h-2 w-2 rounded-full bg-[#fbbf24] animate-ping"></span>
+                <span class="text-[9.5px] font-bold font-mono text-zinc-300 uppercase tracking-widest">GOOGLE CLOUD ARCHITECTURE INITIATED</span>
+            </div>
+
+            <h1 class="heading-font text-5.5xl sm:text-6.5xl font-black text-white tracking-tight leading-none">
+                Sovereign Compliance for <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-emerald-450 to-cyan-400 font-extrabold pb-2">High-Perf Cloud Infrastructure</span>
+            </h1>
+
+            <p class="mt-8 text-sm sm:text-base text-zinc-400 leading-relaxed max-w-2.5xl mx-auto">
+                Taxware is a zero-trust financial ledger, Google Cloud-integrated pipeline router, and compliance API gateway. We empower distributed merchant platforms to serialize, validate, and authorize marketplace metadata safely under secure sandboxing policies.
+            </p>
+
+            <!-- Prompt Desk CTA Panel and Verification Indicator -->
+            <div class="mt-12 max-w-xl mx-auto bg-zinc-950/85 border border-zinc-900 rounded-2xl p-4 flex flex-col md:flex-row gap-3 shadow-2xl backdrop-blur-md text-left transition hover:border-amber-500/20">
+                <div class="flex-1 px-3 py-1.5 bg-zinc-900/30 border border-white/[0.03] rounded-xl flex flex-col justify-center">
+                    <span class="block text-[8px] font-bold text-zinc-400 uppercase font-mono tracking-widest">Active Google Cloud Middleware Cluster</span>
+                    <div class="flex items-center gap-1.5 text-[11px] text-zinc-300 font-mono mt-1">
+                        <span class="text-emerald-500 font-bold">NODE_STATE</span>
+                        <span>api.taxware.in/v3/vault/verify</span>
+                    </div>
+                </div>
+                <button onclick="pingGcpSovereignNode(this)" class="btn-gcp-glow px-6 py-3 bg-gradient-to-r from-amber-500 to-emerald-500 hover:from-amber-400 hover:to-emerald-450 text-slate-950 font-black rounded-xl text-xs transition duration-300 shadow-lg shadow-amber-950/40 flex items-center justify-center gap-2">
+                    ⚡ Ping Node
+                </button>
+            </div>
+            
+            <div id="hero-ping-output" class="mt-4 h-5 text-[10px] font-mono text-emerald-400 opacity-0 transition duration-300 text-center">
+                VPC Service Controls Authorized Connection ➔ Roundtrip: <span class="text-white">28ms</span> | Node state: <span class="bg-emerald-950 px-1.5 py-0.5 rounded border border-emerald-800 text-[9px] text-emerald-400 font-bold" id="state-ping-code">SECURE_RUNNING_V3</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXCLUSIVE GOOGLE CLOUD ARCHITECTURE & PORTFOLIO INTEGRATION -->
+    <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-white/[0.03]" id="gcpPortfolio">
+        <div class="max-w-3xl mb-16 text-left">
+            <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/65 border border-emerald-900/35 px-3 py-1 rounded-full uppercase tracking-wider font-mono">Verified GCloud Infrastructure Portfolio</span>
+            <h2 class="heading-font text-3xl sm:text-4xl font-extrabold text-white mt-4">Enterprise Architecture Core</h2>
+            <p class="text-xs sm:text-sm text-zinc-400 mt-2 leading-relaxed">
+                Celebrating state-of-the-art implementations designed to power high-throughput backend tasks, verified databases, stream processing queues, and real-time ledger audits across modern container infrastructure.
+            </p>
+        </div>
+
+        <!-- Google Cloud Integration Console Simulator Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            
+            <!-- GCP Workspace Interactive Hub Panel -->
+            <div class="lg:col-span-4 flex flex-col justify-between bg-zinc-950/60 border border-white/[0.03] rounded-2.5xl p-6 relative overflow-hidden h-full">
+                <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none select-none heading-font font-black text-6xl text-emerald-500">GCP</div>
+                
+                <div class="space-y-6">
+                    <span class="text-[9.5px] uppercase font-mono tracking-widest text-[#fbbf24] font-bold block">Active GCP Services Controller</span>
+                    
+                    <h3 class="heading-font text-lg font-bold text-white leading-tight">Interact with our backend cloud triggers:</h3>
+                    
+                    <!-- Dynamic Controller Triggers -->
+                    <div class="space-y-3 pt-2">
+                        <button onclick="triggerGcpSimElement('pubsub', this)" class="w-full text-left p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/30 transition flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <span class="h-2 w-2 rounded-full bg-cyan-400" id="indicator-pubsub"></span>
+                                <div>
+                                    <span class="block text-xs font-bold text-white">Cloud Pub/Sub Queue</span>
+                                    <span class="block text-[10px] text-zinc-500 mt-0.5">Stream compliance message payloads</span>
+                                </div>
+                            </div>
+                            <span class="text-[9px] bg-cyan-950/65 border border-cyan-900/40 font-mono px-1.5 py-0.5 rounded text-cyan-400">Trigger</span>
+                        </button>
+
+                        <button onclick="triggerGcpSimElement('cloudsql', this)" class="w-full text-left p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-amber-500/30 transition flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <span class="h-2 w-2 rounded-full bg-amber-400" id="indicator-cloudsql"></span>
+                                <div>
+                                    <span class="block text-xs font-bold text-white">Cloud SQL Repository</span>
+                                    <span class="block text-[10px] text-zinc-500 mt-0.5">Query ledger audit rows & indexes</span>
+                                </div>
+                            </div>
+                            <span class="text-[9px] bg-amber-950/65 border border-amber-900/40 font-mono px-1.5 py-0.5 rounded text-amber-400 font-bold">Execute SQl</span>
+                        </button>
+
+                        <button onclick="triggerGcpSimElement('vertex', this)" class="w-full text-left p-3.5 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-emerald-500/30 transition flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <span class="h-2 w-2 rounded-full bg-emerald-400" id="indicator-vertex"></span>
+                                <div>
+                                    <span class="block text-xs font-bold text-white">Vertex AI Security Node</span>
+                                    <span class="block text-[10px] text-zinc-500 mt-0.5">Audit JSON listing schemas for vulnerabilities</span>
+                                </div>
+                            </div>
+                            <span class="text-[9px] bg-emerald-950/65 border border-emerald-900/40 font-mono px-1.5 py-0.5 rounded text-emerald-400 font-bold">Evaluate</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-zinc-900 text-[10px] font-mono text-zinc-500">
+                    Infrastructure state: <code class="text-emerald-500 font-bold">VPC_TUNNEL_ESTABLISHED</code>
+                </div>
+            </div>
+
+            <!-- Beautiful Live Terminal Mock Log Output -->
+            <div class="lg:col-span-8 flex flex-col">
+                <div class="bg-[#0b0b14] border border-white/[0.05] rounded-2.5xl overflow-hidden shadow-2xl relative h-full flex flex-col justify-between">
+                    <div class="absolute -top-12 -right-12 h-48 w-48 rounded-full bg-amber-500/5 blur-[55px] pointer-events-none"></div>
+                    
+                    <!-- Term Header -->
+                    <div class="bg-zinc-950 px-5 py-4 border-b border-white/[0.04] flex justify-between items-center select-none">
+                        <div class="flex items-center space-x-2">
+                            <span class="h-2.5 w-2.5 rounded-full bg-[#fbbf24]"></span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-cyan-500"></span>
+                            <span class="text-[10px] font-mono text-zinc-500 ml-2 font-bold">taxware-cloud-node-service-logs</span>
+                        </div>
+                        <span class="bg-amber-950/40 text-amber-400 border border-amber-900/25 text-[9px] px-2 py-0.5 rounded font-mono uppercase font-black tracking-wide">Vertex Compliancy Module</span>
+                    </div>
+
+                    <!-- Logs body console selection -->
+                    <div class="p-6 overflow-y-auto max-h-[340px] flex-1 font-mono text-[11px] leading-relaxed select-all" id="gcp-terminal-logs-screen">
+                        <div class="text-zinc-600">[2026-06-19 11:51:04 UTC] Initializing Google Cloud SDK (gcloud version v412.0)</div>
+                        <div class="text-zinc-650">[2026-06-19 11:51:05 UTC] VPC Service Control tunnel state: ESTABLISHED (Zone: asia-east1)</div>
+                        <div class="text-zinc-500">[2026-06-19 11:51:05 UTC] Mount point target points to Cloud Run environment: /api/taxware/v3</div>
+                        <div class="text-emerald-500 font-bold">[2026-06-19 11:51:06 UTC] Verified sovereign DB linkage - Cloud SQL PostgreSQL running on node dev02</div>
+                        <div class="text-cyan-400">[2026-06-19 11:51:06 UTC] Authorized GCP Identity validation check succeeded. (VPC Encrypted tunnel active.)</div>
+                        <div class="text-zinc-400 text-amber-400 font-bold mt-1.5">&gt; System state: SECURE_IDLE_COMPLIANCE_MODE</div>
+                        <div class="text-zinc-500 blink cursor-block" id="logs-ending-line">_</div>
+                    </div>
+
+                    <!-- Live Node Activity Metrics HUD -->
+                    <div class="bg-zinc-950/60 px-5 py-4 border-t border-white/[0.04] text-[9.5px] text-zinc-500 font-mono flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div class="flex items-center space-x-4">
+                            <span>VPC Service Check: <b class="text-emerald-500 font-extrabold uppercase">OK</b></span>
+                            <span>Memory pipeline utilization: <b class="text-amber-400">12.4%</b></span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span>Active GCP Operator:</span> 
+                            <code class="bg-[#241a0c] border border-amber-900/30 px-1.5 py-0.5 rounded text-amber-400 text-[9px] font-bold">COMPLIANCE SECRETARY V3</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Sovereign Product Matrix Bento Grid Container Reveal -->
+    <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="solutions">
+        <div class="text-center mb-16 reveal-node">
+            <h2 class="heading-font text-3xl font-extrabold text-white">Sovereign Compliance Grid</h2>
+            <p class="text-xs text-zinc-500 mt-2">Zero-trust developer platforms designed for high-end workspace control.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- Box 1: Aitsy Companion Workspace -->
+            <div class="spotlight-hover rounded-2xl p-6 flex flex-col justify-between h-80 reveal-node">
+                <div>
+                    <div class="h-11 w-11 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center text-amber-400 font-black mb-6">
+                        ⎔
+                    </div>
+                    <h3 class="font-bold text-white text-md heading-font flex items-center gap-2">
+                        Aitsy Logistics Companion
+                        <span class="text-[9px] bg-amber-500/15 text-amber-400 px-1.5 py-0.5 rounded border border-amber-500/20 uppercase font-mono tracking-wider font-bold">ACTIVE WORKSPACE</span>
+                    </h3>
+                    <p class="text-xs text-zinc-400 mt-3 leading-relaxed">
+                        Interactive staging, product sanitization, and offline metadata testing pipeline hooks which sync directly into standard draft listings. Forces strict $0.20 nominal pricing restrictions safely.
+                    </p>
+                </div>
+                <div class="flex items-center justify-between mt-6">
+                    <a href="/etsy" class="text-xs text-amber-400 hover:text-white font-bold transition flex items-center gap-1.5">
+                        Open Portal ➔
+                    </a>
+                    <span class="text-[9px] uppercase font-mono text-zinc-500 select-none">Vite-backed client proxy</span>
+                </div>
+            </div>
+
+            <!-- Box 2: Secure identity Sentinel custody -->
+            <div class="spotlight-hover rounded-2xl p-6 flex flex-col justify-between h-80 reveal-node">
+                <div>
+                     <div class="h-11 w-11 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 font-extrabold mb-6">
+                        🛡️
+                    </div>
+                    <h3 class="font-bold text-white text-md heading-font flex items-center gap-2">
+                        Sentinel Custody Nodes
+                        <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20 uppercase font-mono tracking-wider font-medium">PROTECTED</span>
+                    </h3>
+                    <p class="text-xs text-zinc-400 mt-3 leading-relaxed">
+                        Encrypts and insulates sensitive merchant tokens and refresh headers. Stores all credentials safe within isolated server-side cloud run variables—protecting client browsers against key injection attacks.
+                    </p>
+                </div>
+                <div class="flex items-center justify-between mt-6">
+                    <span class="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
+                        Locked Node Shield
+                    </span>
+                    <span class="text-[9px] uppercase font-mono text-zinc-500 select-none">AES-256 GCM</span>
+                </div>
+            </div>
+
+            <!-- Box 3: Sovereign Compliance ledger audits -->
+            <div class="spotlight-hover rounded-2xl p-6 flex flex-col justify-between h-80 reveal-node">
+                <div>
+                    <div class="h-11 w-11 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-center justify-center text-cyan-400 font-black mb-6">
+                        📊
+                    </div>
+                    <h3 class="font-bold text-white text-md heading-font flex items-center gap-2">
+                        Quantum Sovereign Ledger
+                        <span class="text-[9px] bg-cyan-500/10 text-cyan-400 px-1.5 py-0.5 rounded border border-cyan-400/20 uppercase font-mono tracking-wider font-semibold">IMMUTABLE</span>
+                    </h3>
+                    <p class="text-xs text-zinc-400 mt-3 leading-relaxed">
+                        Stores and catalogs fully anonymized ledger trails of compliance audits, prefix validation passes, error counts, and mock listing tests, keeping developers accountable without saving private keys.
+                    </p>
+                </div>
+                <div class="flex items-center justify-between mt-6">
+                    <span class="text-xs text-cyan-400 font-bold">
+                        Audited Ledgering active
+                    </span>
+                    <span class="text-[9px] uppercase font-mono text-zinc-500 select-none">RFC-6962 Proofs</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- LIVE FISCAL COMPLIANCE VALIDATOR & EXPLANATION -->
+    <section class="py-24 bg-[#05050b] border-y border-white/[0.02]" id="complianceSimulator">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Explanation panel with custom interactive controller -->
+            <div class="lg:col-span-5 space-y-6 reveal-node text-left">
+                <span class="text-[10px] font-bold text-amber-400 bg-amber-950/45 border border-amber-900/35 px-3 py-1 rounded-full uppercase tracking-wider font-mono">Dynamic Compliance Simulator</span>
+                <h2 class="heading-font text-3xl font-extrabold text-white leading-tight">Live Core Fiscal Validator</h2>
+                <p class="text-xs text-zinc-400 leading-relaxed">
+                    Examine the physical pricing safeguard that runs core to Taxware's draft logic. Feed any target listing valuation into our parse tool below, and watch the parser enforce the $0.20 nominal fee standard.
+                </p>
+
+                <!-- Value pricing inputs -->
+                <div class="space-y-4 pt-2">
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-400 mb-2">Configure Input Product Value (USD):</label>
+                        <div class="relative rounded-xl border border-zinc-800 bg-zinc-900/40 overflow-hidden flex items-center">
+                            <span class="text-xs text-zinc-500 px-3 font-mono">$</span>
+                            <input type="number" id="tax-input" value="34.99" step="1.00" class="w-full bg-transparent border-0 py-3.5 px-1 pr-12 text-xs text-white outline-none font-mono" oninput="runLiveTaxCalculation()">
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs text-amber-350 leading-relaxed">
+                        ⚠️ <b>Sovereign Pipeline Lock:</b> To ensure compliance with external developer rules and prevent real merchant account billing surprises, any tested marketplace listing forces price standardization to <b>$0.20 USD</b>.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Glowing Coding sandbox payload block reveal on viewport scroll -->
+            <div class="lg:col-span-7 reveal-node">
+                <div class="bg-[#0a0a13] border border-white/[0.05] rounded-2xl overflow-hidden shadow-2xl relative">
+                    <div class="absolute -top-12 -right-12 h-44 w-44 rounded-full bg-amber-500/5 blur-[45px] pointer-events-none"></div>
+                    
+                    <!-- Header Bar -->
+                    <div class="bg-zinc-950 px-5 py-3.5 border-b border-white/[0.04] flex justify-between items-center select-none">
+                        <div class="flex items-center space-x-2">
+                            <span class="h-2.5 w-2.5 rounded-full bg-[#fbbf24] animate-pulse"></span>
+                            <span class="text-[10px] font-mono text-zinc-400 ml-2 font-bold">compliance_middleware_payload.json</span>
+                        </div>
+                        <span class="bg-emerald-950/40 text-emerald-400 border border-emerald-900/20 text-[9px] px-2 py-0.5 rounded font-mono uppercase font-black">STAGED_SECURE</span>
+                    </div>
+
+                    <!-- Output parameters -->
+                    <div class="p-6">
+                        <pre class="mono-font text-[11.5px] text-zinc-300 leading-relaxed overflow-x-auto select-all"><code id="taxware-console-block">{
+  "host_node": "api.taxware.in",
+  "request_author": "developer@taxware.in",
+  "input_price": 34.99,
+  "enforced_sandbox_value": 0.20,
+  "listing_fee_tax_estimation": 0.00,
+  "authorized_developer_key": "SHA-256 [verified]",
+  "middleware_compliance_override": true,
+  "audit_trail_recorded": "COMPLIANT_LEDGER_SUCCESS"
+}</code></pre>
+                    </div>
+
+                    <!-- Bottom log metadata bar -->
+                    <div class="bg-zinc-900/20 px-5 py-3 border-t border-white/[0.04] text-[9.5px] text-zinc-500 font-mono flex items-center justify-between select-none">
+                        <span>Parser Strategy: <code class="text-amber-400 font-bold">SANDBOX_PRICE_LOCK</code></span>
+                        <span>State: <code class="text-zinc-500">0xAA42F</code></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Operational Manifesto & Compliance Guidelines -->
+    <section class="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-white/[0.03]">
+        <div class="flex items-center space-x-3 mb-10 reveal-node">
+            <span class="h-4 w-4 rounded-full bg-amber-500 block"></span>
+            <h2 class="heading-font text-2.5xl font-bold text-white">Operational Manifesto</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-xs sm:text-sm leading-relaxed text-zinc-400">
+            <div class="space-y-3 reveal-node">
+                <h4 class="font-bold text-white text-md">✦ Identity Integration & Demarcation</h4>
+                <p>Taxware strictly enforces workspace environment separation. Programmatic listing test attempts must prepend clear draft warnings, store listing fields safely inside local state hooks, and never bypass sandbox guards.</p>
+            </div>
+            
+            <div class="space-y-3 reveal-node">
+                <h4 class="font-bold text-white text-md">✦ Token Custody Isolation</h4>
+                <p>By routing OAuth requests and client handshakes through server hosted proxies, personal tokens and access parameters are shielded inside cloud environmental boundaries, preventing local workspace exposure completely.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Dashboard Hub -->
+    <section class="py-24 text-center max-w-xl mx-auto px-4" id="contact">
+        <div class="relative bg-gradient-to-br from-[#0e0e1c] to-amber-500/5 border border-white/[0.05] rounded-3xl p-10 text-white shadow-2xl overflow-hidden reveal-node">
+            <div class="absolute -top-16 -left-16 h-40 w-40 rounded-full bg-amber-500/10 blur-[45px] pointer-events-none"></div>
+            
+            <h2 class="heading-font text-xl font-bold">Contact Compliance Desk</h2>
+            <p class="text-[11px] text-zinc-400 leading-relaxed mt-3 max-w-md mx-auto">
+                For questions regarding sovereign proxy deployments, integration token revocation audits, or private client pipeline configurations:
+            </p>
+            <div class="mt-8 flex flex-col items-center gap-1.5 font-mono">
+                <span class="text-sm font-bold text-amber-400 select-all font-semibold selection:bg-amber-500/30">support@taxware.in</span>
+                <span class="text-xs text-zinc-500 mt-1">Taxware Corp. Workspace</span>
+                <a href="http://www.taxware.in" target="_blank" rel="noreferrer" class="text-xs text-zinc-400 hover:text-white underline transition mt-2">www.taxware.in</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Status Info Bar -->
+    <div class="sticky bottom-0 z-40 bg-zinc-950/85 backdrop-blur-md border-t border-white/[0.04] px-4 py-2.5 text-[10px] text-zinc-500 bg-black/90 font-mono flex items-center justify-between select-none">
+        <div class="flex items-center space-x-3">
+            <span class="flex h-1.5 w-1.5 rounded-full bg-amber-500 relative">
+                <span class="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 animate-ping"></span>
+            </span>
+            <span class="font-bold text-zinc-400">GCP Tunnel Connection: Active & Secure</span>
+        </div>
+        <div class="hidden sm:flex items-center space-x-3">
+            <span>Powered by <b class="text-amber-400">Quantum Middleware</b></span>
+            <span class="text-zinc-650">|</span>
+            <span>Local Real-Time: <code id="ticker-time">2026-06-19 11:51:00 UTC</code></span>
+        </div>
+    </div>
+
+    <!-- Compliant Static Footer -->
+    <footer class="py-12 bg-[#020204] border-t border-white/[0.03] text-[11px] text-zinc-600 text-center relative z-10 select-none">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+            <p>
+                &copy; 2026 Taxware. All rights reserved. Registered compliance portal at <a href="http://www.taxware.in" class="underline text-zinc-400 hover:text-white transition">taxware.in</a>.
+            </p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPTS (Reveal on scroll + Spotlight card tracking + GCP terminal logs) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // 1. HARDWARE-ACCELERATED SCROLL REVEAL (Intersection Observer)
+            const revealNodes = document.querySelectorAll(".reveal-node");
+            const observerOptions = {
+                root: null,
+                threshold: 0.05,
+                rootMargin: "0px 0px -40px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                        // Unobserve after showing so transition isn't repeatedly reset on rapid scroll
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            revealNodes.forEach(node => observer.observe(node));
+
+            // 2. SCROLL PROGRESS BAR INDICATOR
+            window.addEventListener('scroll', () => {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = totalHeight > 0 ? (window.pageYOffset / totalHeight) : 0;
+                const bar = document.getElementById('gcp-scroll-bar');
+                if (bar) {
+                    bar.style.transform = `scaleX(${progress})`;
+                }
+            });
+
+            // 3. MOUSE TRACKING GLOW FOR MATRIX SPOTLIGHT CARDS & CONTROL BUTTONS
+            const cards = document.querySelectorAll('.spotlight-hover, .btn-gcp-glow');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+
+            // 4. MOUSE FLUID CURSOR GLOW ACCENT
+            const cursorGlow = document.getElementById('gcp-cursor-glow');
+            if (cursorGlow) {
+                // Show glow once mouse moves on desktop
+                document.addEventListener('mousemove', e => {
+                    cursorGlow.style.opacity = "1";
+                    cursorGlow.style.left = e.clientX + 'px';
+                    cursorGlow.style.top = e.clientY + 'px';
+                });
+                
+                document.addEventListener('mouseleave', () => {
+                    cursorGlow.style.opacity = "0";
+                });
+            }
+
+            // 5. SECURE REAL-TIME UTC TICKER CLOCK
+            setInterval(() => {
+                const now = new Date();
+                const cleanStr = now.getUTCFullYear() + "-" + 
+                    String(now.getUTCMonth() + 1).padStart(2, '0') + "-" + 
+                    String(now.getUTCDate()).padStart(2, '0') + " " + 
+                    String(now.getUTCHours()).padStart(2, '0') + ":" + 
+                    String(now.getUTCMinutes()).padStart(2, '0') + ":" + 
+                    String(now.getUTCSeconds()).padStart(2, '0') + " UTC";
+                const timeEl = document.getElementById("ticker-time");
+                if (timeEl) timeEl.textContent = cleanStr;
+            }, 1000);
+        });
+
+        // 6. HERO NODE VERIFICATION SIMULATION
+        function pingGcpSovereignNode(btn) {
+            const outputs = document.getElementById("hero-ping-output");
+            const codeOutput = document.getElementById("state-ping-code");
+            if (!outputs || !codeOutput) return;
+
+            outputs.style.opacity = "1";
+            codeOutput.textContent = "PINGING_GCP_MIDDLEWARE_CLUSTER...";
+            codeOutput.className = "bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800 text-[9px] text-amber-400 font-bold animate-pulse";
+
+            // Add mock log into the terminal simultaneously
+            appendTerminalLogs("INFO", "Ping verification request received from client browser. Performing VPC handshake.");
+
+            setTimeout(() => {
+                codeOutput.textContent = "AUTHORIZED_V3_SECURE (200 OK)";
+                codeOutput.className = "bg-emerald-950 px-1.5 py-0.5 rounded border border-emerald-850 text-[9px] text-emerald-400 font-bold";
+                appendTerminalLogs("SUCCESS", "VPC Handshake success. Client authenticated securely under compliant middleware rules.");
+            }, 1200);
+        }
+
+        // 7. INTERACTIVE GCP TERMINAL WORKSPACE LOGS STREAMER
+        function appendTerminalLogs(type, message) {
+            const terminal = document.getElementById("gcp-terminal-logs-screen");
+            const endingLine = document.getElementById("logs-ending-line");
+            if (!terminal || !endingLine) return;
+
+            const timeStr = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+            
+            // Assign color class based on message levels
+            let colorClass = "text-zinc-400";
+            if (type === "INFO") colorClass = "text-cyan-400";
+            if (type === "SUCCESS") colorClass = "text-emerald-400 font-semibold";
+            if (type === "WARNING") colorClass = "text-amber-400 font-semibold";
+            if (type === "QUERY") colorClass = "text-purple-400";
+
+            const newLog = document.createElement("div");
+            newLog.className = `${colorClass} mt-1 animate-fadeIn`;
+            newLog.innerHTML = `[${timeStr}] ${message}`;
+
+            terminal.insertBefore(newLog, endingLine);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // GCP Services controllers mapping triggers
+        function triggerGcpSimElement(service, element) {
+            if (service === 'pubsub') {
+                appendTerminalLogs("INFO", "Initializing GCP Pub/Sub dynamic pull request on topic listings-dispatch...");
+                setTimeout(() => {
+                    appendTerminalLogs("SUCCESS", "Pulled batch. Staged message items: v3-draft_ID422, v3-draft_ID423. Verified safe price values ($0.20 EUR).");
+                }, 800);
+            } else if (service === 'cloudsql') {
+                appendTerminalLogs("QUERY", "SELECT index_key, operator_hash, audit_state FROM sovereign_fiscal_ledger WHERE compliance_status = 'VALIDATED' LIMIT 2;");
+                setTimeout(() => {
+                    appendTerminalLogs("SUCCESS", "Drizzle SQL fetch complete. Returning 2 compliant log rows. Status indexing checks verified: [OK].");
+                }, 900);
+            } else if (service === 'vertex') {
+                appendTerminalLogs("WARNING", "Connecting Vertex AI endpoint parsing payload for compliance flags...");
+                setTimeout(() => {
+                    appendTerminalLogs("SUCCESS", "Vertex safety scan finished: 100% compliant. No vulnerable fields, stock image hazards, or credentials detected.");
+                }, 1000);
+            }
+        }
+
+        // 8. DYNAMIC LEDGER VALUE CALCULATOR PARSER
+        function runLiveTaxCalculation() {
+            const valInput = document.getElementById("tax-input");
+            const consoleCode = document.getElementById("taxware-console-block");
+            
+            if (valInput && consoleCode) {
+                const val = parseFloat(valInput.value) || 0.00;
+                
+                const mockObj = {
+                    "host_node": "api.taxware.in",
+                    "request_author": "developer@taxware.in",
+                    "input_price": parseFloat(val.toFixed(2)),
+                    "enforced_sandbox_value": 0.20,
+                    "listing_fee_tax_estimation": 0.00,
+                    "authorized_developer_key": "SHA-256 [verified]",
+                    "middleware_compliance_override": val !== 0.20,
+                    "audit_trail_recorded": "COMPLIANT_LEDGER_SUCCESS"
+                };
+
+                consoleCode.textContent = JSON.stringify(mockObj, null, 2);
+                appendTerminalLogs("INFO", `Fiscal calculator input price updated to $${val.toFixed(2)}. Automated policy enforces safeguard to $0.20.`);
+            }
+        }
+    </script>
+</body>
+</html>
