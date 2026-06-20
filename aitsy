@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aitsy Logistics Companion | Quantum Sandbox Integration</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;950&display=swap" rel="stylesheet font-sans">
+    
+    <style>
+        :root {
+            --neon-blue: #06b6d4;
+            --neon-purple: #a855f7;
+            --etsy-orange: #f1641e;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030307;
+            overflow-x: hidden;
+        }
+        .heading-font {
+            font-family: 'Outfit', sans-serif;
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Ambient Glow Vectors */
+        .quantum-mesh {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(241, 100, 30, 0.04) 0px, transparent 70%);
+        }
+
+        /* Antigravity floating simulation keyframe */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(0.8deg); }
+        }
+        @keyframes float-delayed {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(-0.5deg); }
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.2; }
+            50% { transform: scale(1.05); opacity: 0.5; }
+            100% { transform: scale(0.95); opacity: 0.2; }
+        }
+
+        .element-float {
+            animation: float 7s ease-in-out infinite;
+        }
+        .element-float-delay {
+            animation: float-delayed 9s ease-in-out infinite;
+        }
+
+        /* Radial Spotlight Background Hover Technique with dynamic pointer coordinates */
+        .spotlight-card {
+            position: relative;
+            background: rgba(15, 15, 25, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: border-color 0.4s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+            overflow: hidden;
+        }
+        .spotlight-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(168, 85, 247, 0.15), transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .spotlight-card:hover::before {
+            opacity: 1;
+        }
+        .spotlight-card:hover {
+            border-color: rgba(168, 85, 247, 0.35);
+            box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.2);
+            transform: translateY(-4px);
+        }
+
+        /* Fixed Active Floating Cursor Glow Element */
+        #etsy-cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.04) 0%, rgba(6, 182, 212, 0.02) 40%, transparent 70%);
+            pointer-events: none;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out;
+            opacity: 0;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020205;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(168, 85, 247, 0.25);
+            border: 2px solid #020205;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(168, 85, 247, 0.5);
+        }
+
+        /* Intersection Fade */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px) scale(0.97);
+            filter: blur(4px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+        .reveal-on-scroll.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+    </style>
+</head>
+<body class="quantum-mesh text-slate-350 min-h-screen flex flex-col antialiased">
+
+    <!-- Active Hardware-Accelerated Top Scroll Progress Tracker -->
+    <div class="fixed top-0 left-0 w-full h-[3px] bg-gradient-to-r from-purple-500 via-pink-500 to-[#f1641e] z-[100] origin-left" id="etsy-scroll-bar" style="transform: scaleX(0);"></div>
+
+    <!-- Interactive Ambient Glow Follower -->
+    <div id="etsy-cursor-glow"></div>
+
+    <!-- Top Glow Grid Header -->
+    <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/[0.05] shadow-[0_1px_30px_rgba(0,0,0,0.5)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <!-- Gravitational Levitation App Brand -->
+                <div class="relative h-11 w-11 rounded-xl bg-purple-950/40 border border-purple-500/30 flex items-center justify-center text-purple-400 font-extrabold text-xl shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+                    ⚡
+                    <div class="absolute -inset-0.5 rounded-xl bg-purple-500/20 blur opacity-50 animate-pulse"></div>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="heading-font font-black tracking-tight text-white text-lg">Aitsy Workspace</span>
+                        <span class="text-[9px] font-bold bg-[#f1641e]/15 text-[#f1641e] border border-[#f1641e]/30 px-1.5 py-0.5 rounded uppercase font-mono-custom tracking-wider">v3 Core</span>
+                    </div>
+                    <span class="block text-[10px] text-zinc-500 tracking-wider uppercase font-mono-custom font-extrabold">Antigravity Staging Host</span>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-8 text-xs font-semibold text-zinc-400 select-none">
+                <a href="#about" class="hover:text-purple-400 border-b border-transparent hover:border-purple-400/50 py-1.5 transition">About Core</a>
+                <a href="#compliance" class="hover:text-cyan-400 border-b border-transparent hover:border-cyan-400/50 py-1.5 transition">Compliance Safeguards</a>
+                <a href="#reviewConsole" class="hover:text-[#f1641e] border-b border-transparent hover:border-[#f1641e]/55 py-1.5 transition">Live Sandbox Console</a>
+                <a href="#privacy" class="hover:text-zinc-200 transition">Privacy policy</a>
+                <a href="#contact" class="px-4 py-2 bg-purple-500/10 text-purple-450 border border-purple-500/20 rounded-lg hover:bg-purple-500/20 hover:border-purple-500/40 transition">Contact Developer</a>
+            </nav>
+
+            <span class="md:hidden text-[9px] font-bold text-cyan-400 bg-cyan-950/40 border border-cyan-800/40 px-2.5 py-1 rounded-full uppercase tracking-widest font-mono-custom">Etsy Sandbox Hub</span>
+        </div>
+    </header>
+
+    <!-- Hero / Zero-Gravity Staggered Headline -->
+    <section class="relative pt-24 pb-20 border-b border-white/[0.03] overflow-hidden" id="about">
+        <!-- Floating Cybernetic Orbs -->
+        <div class="absolute top-20 left-12 w-32 h-32 rounded-full bg-purple-600/10 blur-[60px] element-float"></div>
+        <div class="absolute bottom-10 right-16 w-44 h-44 rounded-full bg-cyan-600/10 blur-[85px] element-float-delay"></div>
+
+        <div class="max-w-5xl mx-auto px-4 text-center relative z-10">
+            <div class="inline-flex items-center space-x-2 bg-zinc-900/60 border border-zinc-800/85 px-4 py-1.5 rounded-full mb-8">
+                <span class="h-2 w-2 rounded-full bg-[#f1641e]"></span>
+                <span class="text-[10px] font-bold font-mono text-zinc-300 uppercase tracking-widest">Etsy Developer Sandbox Certified Integration</span>
+            </div>
+
+            <h1 class="heading-font text-4xl sm:text-6xl font-black text-white tracking-tight leading-none">
+                Staging Physical Logistics with <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-[#f1641e]">Gravitational Compliance</span>
+            </h1>
+
+            <p class="mt-8 text-sm sm:text-base text-zinc-400 leading-relaxed max-w-2xl mx-auto">
+                Aitsy Companion coordinates your handmade fabrication lists, offline specifications, and SEO tagging pipelines. Seamlessly organize workflows, then safely push compliant metadata drafts directly and securely to your Etsy Shop.
+            </p>
+
+            <!-- Prompt Desk CTA Panel -->
+            <div class="mt-12 max-w-lg mx-auto bg-zinc-950/60 border border-zinc-900/90 rounded-2xl p-4 flex flex-col sm:flex-row gap-3 shadow-2xl backdrop-blur-md">
+                <div class="flex-1 text-left px-3 py-1 bg-zinc-900/40 border border-white/[0.03] rounded-xl flex items-center justify-between">
+                    <div class="truncate">
+                        <span class="block text-[8px] font-bold text-zinc-500 uppercase font-mono tracking-widest">Application ID Scope</span>
+                        <span class="text-[11px] text-zinc-300 font-mono">listings_w, listings_r, shop_r</span>
+                    </div>
+                    <span class="text-emerald-500 text-[10px] font-bold uppercase font-mono">Secured</span>
+                </div>
+                <a href="#reviewConsole" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-[#f1641e] hover:from-purple-500 hover:to-[#f1843e] text-white font-extrabold rounded-xl text-xs transition shadow-lg shadow-purple-950/50 flex items-center justify-center gap-2">
+                    🚀 Launch Sandbox Console
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sleek Grid / Bento Dashboard Presentation -->
+    <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="heading-font text-2xl sm:text-3xl font-bold text-white">Quantum Design Paradigm</h2>
+            <p class="text-xs text-zinc-500 mt-2">Built for individual builders to track and serialize handmade assets securely.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Box 1 -->
+            <div class="spotlight-card rounded-2xl p-6 flex flex-col justify-between h-72 reveal-on-scroll">
+                <div>
+                    <div class="h-10 w-10 bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 font-black mb-6">01</div>
+                    <h3 class="font-bold text-white text-md heading-font">Offline Product Pipeline</h3>
+                    <p class="text-xs text-zinc-400 mt-3 leading-relaxed">
+                        Refine, edit, and audit titles, raw manufacturing materials, and SEO tags offline in safe local caches before pushing live. Bypasses typical listing hazards.
+                    </p>
+                </div>
+                <span class="text-[10px] uppercase font-mono text-purple-500 font-extrabold select-none">Unfettered Cache</span>
+            </div>
+
+            <!-- Box 2 -->
+            <div class="spotlight-card rounded-2xl p-6 flex flex-col justify-between h-72 reveal-on-scroll">
+                <div>
+                    <div class="h-10 w-10 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-center justify-center text-cyan-400 font-black mb-6">02</div>
+                    <h3 class="font-bold text-white text-md heading-font">Isolated Sync (v3 API)</h3>
+                    <p class="text-xs text-zinc-400 mt-3 leading-relaxed">
+                        Communicates securely with Etsy via server-side secure API proxy structures. Strictly syncs configurations directly to a restricted "Draft" visibility bucket.
+                    </p>
+                </div>
+                <span class="text-[10px] uppercase font-mono text-cyan-500 font-extrabold select-none">Server Isolation</span>
+            </div>
+
+            <!-- Box 3 -->
+            <div class="spotlight-card rounded-2xl p-6 flex flex-col justify-between h-72 reveal-on-scroll">
+                <div>
+                    <div class="h-10 w-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center text-[#f1641e] font-black mb-6">03</div>
+                    <h3 class="font-bold text-white text-md heading-font">Etsy Testing Compliance</h3>
+                    <p class="text-xs text-zinc-400 mt-3 leading-relaxed">
+                        Automated triggers built-in. Prepend warnings, set maximum sandbox transactional fees, force local drafts, and avoid stock photo automated flags instantly.
+                    </p>
+                </div>
+                <span class="text-[10px] uppercase font-mono text-[#f1641e] font-extrabold select-none">Mitigated Sandbox</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE COMPLIANCE SIMULATOR PLAYGROUND -->
+    <section class="py-20 bg-[#06060c] border-y border-white/[0.02]" id="reviewConsole">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Instructions and Description -->
+            <div class="lg:col-span-5 space-y-6">
+                <span class="text-[10px] font-bold text-purple-400 bg-purple-950/50 border border-purple-800/40 px-3 py-1 rounded-full uppercase tracking-wider font-mono">Compliance Terminal Workspace</span>
+                <h2 class="heading-font text-3xl font-extrabold text-white leading-tight">Interact with our API Safety Controls</h2>
+                <p class="text-xs text-zinc-400 leading-normal">
+                    This interactive simulator demonstrating how Aitsy handles listing payloads to fully adapt to Section 2 of Etsy's API Guidelines.
+                </p>
+
+                <!-- Toggle Controllers -->
+                <div class="space-y-3 pt-4">
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-zinc-900/50 border border-zinc-800 cursor-pointer">
+                        <div>
+                            <span class="text-xs font-bold text-white">Prepend testing prefix ("[TEST]")</span>
+                            <span class="block text-[10px] text-zinc-500 mt-0.5">Appends warning tag to Title & Description</span>
+                        </div>
+                        <input type="checkbox" id="sim-prefix" checked class="rounded border-zinc-700 bg-zinc-800 text-purple-600 focus:ring-purple-500" onchange="updatePayloadSim()">
+                    </label>
+
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-zinc-900/50 border border-zinc-800 cursor-pointer">
+                        <div>
+                            <span class="text-xs font-bold text-white">Enforce Low-Price Safeguard ($0.20)</span>
+                            <span class="block text-[10px] text-zinc-500 mt-0.5">Locks prices down to nominal listing cost</span>
+                        </div>
+                        <input type="checkbox" id="sim-price" checked class="rounded border-zinc-700 bg-zinc-800 text-purple-600 focus:ring-purple-500" onchange="updatePayloadSim()">
+                    </label>
+
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-zinc-900/50 border border-zinc-800 cursor-pointer">
+                        <div>
+                            <span class="text-xs font-bold text-white">Lock state to "Draft" status</span>
+                            <span class="block text-[10px] text-zinc-500 mt-0.5">Keeps listing invisible on public search grids</span>
+                        </div>
+                        <input type="checkbox" id="sim-draft" checked disabled class="rounded border-zinc-700 bg-zinc-800 text-purple-600 focus:ring-purple-500">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Glowing Coding Space Node (Antigravity Output Payload Showcase) -->
+            <div class="lg:col-span-7">
+                <div class="bg-[#0c0c16] border border-white/[0.06] rounded-2xl overflow-hidden shadow-2xl relative">
+                    <div class="absolute -top-12 -right-12 h-44 w-44 rounded-full bg-purple-500/10 blur-[45px] pointer-events-none"></div>
+                    
+                    <!-- Header -->
+                    <div class="bg-zinc-900/60 px-5 py-3.5 border-b border-white/[0.04] flex justify-between items-center bg-zinc-950">
+                        <div class="flex items-center space-x-2">
+                            <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                            <span class="text-[10px] font-mono text-zinc-500 ml-2 font-bold">etsy_sandbox_dispatch_payload.json</span>
+                        </div>
+                        <span class="bg-purple-900/20 text-purple-400 border border-purple-800/20 text-[9px] px-2 py-0.5 rounded font-mono uppercase font-bold">POST Payload</span>
+                    </div>
+
+                    <!-- JSON text block -->
+                    <div class="p-6">
+                        <pre class="mono-font text-[11px] text-cyan-400 leading-relaxed overflow-x-auto selection:bg-purple-500/30 select-all"><code id="simulation-code-block">{
+  "title": "[TEST] Custom Leather Stamped Wallet Pipeline SKU-101",
+  "description": "[TEST] Handcrafted physical coordinates detailing raw production steps...\n\n--- COMPLIANCE NOTE: Created via Etsy API Test Pipeline in Draft sandbox state.",
+  "price": 0.20,
+  "state": "draft",
+  "materials": ["Full-Grain Veg-Tan Leather", "Waxed Linen Cord", "Beeswax Finish"],
+  "taxonomy_id": 1390,
+  "quantity": 1,
+  "who_made": "i_did",
+  "is_writeable": true,
+  "developer_compliance_toggles": {
+    "sandbox_security_strict": true,
+    "user_email": "developer@taxware.in"
+  }
+}</code></pre>
+                    </div>
+
+                    <!-- Footer Action details -->
+                    <div class="bg-zinc-900/30 px-5 py-3 border-t border-white/[0.04] text-[9.5px] text-zinc-500 font-mono flex items-center justify-between">
+                        <span>Handshake State: <code class="text-emerald-500 font-bold">READY_COMPLIANT</code></span>
+                        <span>Authorized by Antigravity Agent</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ETSY DEVELOPER COMPLIANCE POLICIES READOUTS -->
+    <section class="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-white/[0.03]" id="compliance">
+        <div class="flex items-center space-x-3 mb-10">
+            <span class="h-4 w-4 rounded-full bg-emerald-500 block animate-pulse"></span>
+            <h2 class="heading-font text-2xl font-bold text-white">How We Comply with Etsy Policies</h2>
+        </div>
+
+        <div class="space-y-6 text-slate-350 text-xs sm:text-sm leading-relaxed">
+            <div class="p-5 rounded-2xl bg-zinc-900/40 border border-white/[0.04]">
+                <h3 class="font-bold text-white text-md flex items-center gap-2 mb-2">
+                    <span class="text-purple-400 text-sm">✦</span>
+                    Draft Listing Policy Adherence (Section 2.1)
+                </h3>
+                <p class="text-zinc-400 text-xs">
+                    Every API request fired programmatically lands directly under a <code class="bg-[#240c1a]/50 text-pink-400 font-mono text-[10px] px-1.5 py-0.5 rounded border border-pink-900/20">"draft"</code> status schema. Drafts are isolated behind the authorized seller's dashboard wall and stay hidden from standard public Etsy marketplace searches, protecting real consumers from accidental test buys.
+                </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-zinc-900/40 border border-white/[0.04]">
+                <h3 class="font-bold text-white text-md flex items-center gap-2 mb-2">
+                    <span class="text-cyan-400 text-sm">✦</span>
+                    Forced $0.20 USD Nominal Listing Value
+                </h3>
+                <p class="text-zinc-400 text-xs">
+                    To completely rule out transaction abuse, high payment failures, or unintended seller balance liabilities during testing routines, our application automatically overrides product valuations to the baseline standard listing price of exactly twenty cents ($0.20 USD).
+                </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-zinc-900/40 border border-white/[0.04]">
+                <h3 class="font-bold text-white text-md flex items-center gap-2 mb-2">
+                    <span class="text-amber-500 text-sm">✦</span>
+                    Security Architecture: Server-Side Token Insulation
+                </h3>
+                <p class="text-zinc-400 text-xs">
+                    We strictly enforce full separation of frontend assets and sensitive secrets. Etsy credentials, tokens, or private scopes are strictly hidden and hosted server-side under secured, isolated, read-protected container environments. Client-side code never intercepts raw API key footprints.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy Readouts -->
+    <section class="py-20 bg-[#040409] border-b border-white/[0.02]" id="privacy">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="border-b border-zinc-800 pb-4 mb-8">
+                <h2 class="heading-font text-2xl font-extrabold text-white">Privacy Policy</h2>
+                <span class="text-[10px] font-mono text-zinc-500 font-bold block mt-1 uppercase tracking-wide">Last Revised: June 19, 2026</span>
+            </div>
+
+            <div class="space-y-6 text-xs text-zinc-400 leading-relaxed">
+                <p>Taxware ("we", "our", "us") registers the Aitsy Logistics Dashboard as a protected system companion. This page chronicles how integration properties, OAuth permissions, and metadata packages are audited.</p>
+                
+                <div>
+                    <h3 class="font-bold text-white text-sm mb-2">1. Identity and Scope Configuration</h3>
+                    <p>When authenticating through the Etsy integration node, standard OAuth 2.0 properties request structural credentials solely for physical logistics and listing assembly scopes (<code class="font-mono text-cyan-400 text-[10px] bg-zinc-900/80 px-1 py-0.5 rounded">listings_w</code>). Our application never requests, queries, or imports buyer personal details, private messages, billing cards, or transaction columns.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white text-sm mb-2">2. Token Security and Isolation</h3>
+                    <p>All active Access and Refresh tokens are secured in server environment containers. Credentials do not flow to client cookies or transient client caches. The application enforces server-side route guards strictly requiring verified developer matching keys.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white text-sm mb-2">3. Policy Revocation</h3>
+                    <p>Users maintain permanent, absolute sovereignty over integration linkages. To immediately disable and revoke connection hooks, you can disconnect Aitsy through your secure Etsy Account Integration Portal at any time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terms and Disclaimers -->
+    <section class="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-white/[0.03]" id="terms">
+        <h2 class="heading-font text-2xl font-bold text-white border-b border-zinc-800 pb-4 mb-8">Terms of Service</h2>
+        <div class="space-y-6 text-xs text-zinc-400 leading-relaxed">
+            <div>
+                <h3 class="font-bold text-slate-200 text-sm mb-2">1. Developer Safeguard Toggles</h3>
+                <p>By registering your shop through Aitsy, you acknowledge and agree to support standard platform testing compliance features. Attempting to bypass draft configurations or force high mock pricing variables on connected live items is strictly banned.</p>
+            </div>
+            <div>
+                <h3 class="font-bold text-slate-200 text-sm mb-2">2. Fee Accountability</h3>
+                <p>Every draft listing pushed securely through standard API pipelines may incur customary platform listing fees ($0.20 USD). You remain solely responsible for Etsy listing charges, invoices, or liabilities displayed on your merchant accounts ledger.</p>
+            </div>
+            <div>
+                <h3 class="font-bold text-slate-200 text-sm mb-2">3. Independent Operation</h3>
+                <p>This workspace operates as an independent logistics staging companion. It has not been formally approved, certified, or sponsored in an official capacity by Etsy Inc.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact support card container -->
+    <section class="py-24 text-center max-w-xl mx-auto px-4" id="contact">
+        <div class="relative bg-gradient-to-br from-[#121225] to-[#f1641e]/15 border border-white/[0.06] rounded-3xl p-10 text-white shadow-2xl overflow-hidden">
+            <div class="absolute -top-16 -left-16 h-40 w-40 rounded-full bg-cyan-500/10 blur-[45px] pointer-events-none"></div>
+            
+            <h2 class="heading-font text-xl font-black">Need Technical Support?</h2>
+            <p class="text-[11px] text-zinc-400 leading-normal mt-3 max-w-md mx-auto">
+                For questions regarding sandbox integrations, token configuration, revoking credential scopes, or general developer platform questions, seek support directly:
+            </p>
+            <div class="mt-8 flex flex-col items-center gap-1.5 font-mono">
+                <span class="text-sm font-bold text-cyan-400 selection:bg-cyan-500/30 select-all">support@taxware.in</span>
+                <a href="http://www.taxware.in" target="_blank" rel="noreferrer" class="text-xs text-zinc-500 hover:text-white underline transition mt-2">www.taxware.in</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sticky bottom status bar for high quality "Antigravity/DeepMind" developer immersion -->
+    <div class="sticky bottom-0 z-40 bg-zinc-950/80 backdrop-blur-md border-t border-white/[0.04] px-4 py-2.5 text-[10px] text-zinc-500 font-mono flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <span class="flex h-1.5 w-1.5 rounded-full bg-emerald-500 relative">
+                <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping"></span>
+            </span>
+            <span class="font-bold text-zinc-400">Host Connection: Compliance Pipeline Live</span>
+        </div>
+        <div class="hidden sm:flex items-center space-x-3">
+            <span>Powered by <b class="text-purple-400">Antigravity Agent</b></span>
+            <span class="text-zinc-600">|</span>
+            <span>Local Time: <code id="ticker-time">2026-06-19 11:44 UTC</code></span>
+        </div>
+    </div>
+
+    <!-- Futuristic, High-End Footer -->
+    <footer class="py-12 bg-[#020205] border-t border-white/[0.03] text-[11px] text-zinc-600 text-center relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+            <p>
+                &copy; 2026 Taxware. All rights reserved. Registered logistics portal at <a href="http://www.taxware.in" class="underline text-zinc-400 hover:text-white transition">taxware.in</a>.
+            </p>
+            <p class="text-[10px] text-zinc-600 max-w-2xl mx-auto leading-relaxed">
+                Etsy is a registered trademark of Etsy, Inc. This application acts entirely as an independent developer portal and has no formal connection to, or endorsement from, Etsy, Inc.
+            </p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPTS (Reveal on scroll + Custom Sandbox Payload Simulator + Mouse spotlights) -->
+    <script>
+        // Smooth Intersection Observer Reveal Activator
+        document.addEventListener("DOMContentLoaded", () => {
+            const elements = document.querySelectorAll(".reveal-on-scroll");
+            const observerOptions = {
+                root: null,
+                threshold: 0.05,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                        // Once transition triggers, we can unobserve
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            elements.forEach(el => observer.observe(el));
+
+            // SCROLL BAR PROGRESS UPDATER
+            window.addEventListener('scroll', () => {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = totalHeight > 0 ? (window.pageYOffset / totalHeight) : 0;
+                const bar = document.getElementById('etsy-scroll-bar');
+                if (bar) {
+                    bar.style.transform = `scaleX(${progress})`;
+                }
+            });
+
+            // MOUSESPOT CARD GRADIENT COORDS
+            const cards = document.querySelectorAll('.spotlight-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+
+            // CURSOR FOLLOW FLUID GLOW
+            const cursorGlow = document.getElementById('etsy-cursor-glow');
+            if (cursorGlow) {
+                document.addEventListener('mousemove', e => {
+                    cursorGlow.style.opacity = "1";
+                    cursorGlow.style.left = e.clientX + 'px';
+                    cursorGlow.style.top = e.clientY + 'px';
+                });
+                
+                document.addEventListener('mouseleave', () => {
+                    cursorGlow.style.opacity = "0";
+                });
+            }
+
+            // Setup dynamic live ticking clock
+            setInterval(() => {
+                const now = new Date();
+                const cleanStr = now.getUTCFullYear() + "-" + 
+                    String(now.getUTCMonth() + 1).padStart(2, '0') + "-" + 
+                    String(now.getUTCDate()).padStart(2, '0') + " " + 
+                    String(now.getUTCHours()).padStart(2, '0') + ":" + 
+                    String(now.getUTCMinutes()).padStart(2, '0') + ":" + 
+                    String(now.getUTCSeconds()).padStart(2, '0') + " UTC";
+                const timeEl = document.getElementById("ticker-time");
+                if (timeEl) timeEl.textContent = cleanStr;
+            }, 1000);
+        });
+
+        // Live Dynamic Sandbox compliance generator
+        function updatePayloadSim() {
+            const usePrefix = document.getElementById("sim-prefix").checked;
+            const lowPrice = document.getElementById("sim-price").checked;
+
+            const codeBlock = document.getElementById("simulation-code-block");
+
+            const finalTitle = usePrefix 
+                ? "[TEST] Custom Leather Stamped Wallet Pipeline SKU-101" 
+                : "Custom Leather Stamped Wallet Pipeline SKU-101";
+
+            const finalDesc = usePrefix 
+                ? "[TEST] Handcrafted physical coordinates detailing raw production steps...\n\n--- COMPLIANCE NOTE: Created via Etsy API Test Pipeline in Draft sandbox state." 
+                : "Handcrafted physical coordinates detailing raw production steps for handmade inventory tracking.";
+
+            const finalPrice = lowPrice ? 0.20 : 34.99;
+
+            const mockObj = {
+                title: finalTitle,
+                description: finalDesc,
+                price: parseFloat(finalPrice.toFixed(2)),
+                state: "draft",
+                materials: [
+                    "Full-Grain Veg-Tan Leather", 
+                    "Waxed Linen Cord", 
+                    "Beeswax Finish"
+                ],
+                taxonomy_id: 1390,
+                quantity: 1,
+                who_made: "i_did",
+                is_writeable: true,
+                developer_compliance_toggles: {
+                    sandbox_security_strict: true,
+                    user_email: "developer@taxware.in",
+                    test_flag_attached: usePrefix,
+                    safeguard_low_price: lowPrice
+                }
+            };
+
+            if (codeBlock) {
+                codeBlock.textContent = JSON.stringify(mockObj, null, 2);
+            }
+        }
+    </script>
+</body>
+</html>
